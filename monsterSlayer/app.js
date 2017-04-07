@@ -32,7 +32,10 @@ new Vue({
             this.checkWin();
         },
         heal: function() {
-
+            if (this.playerHealth <= 85) {
+                this.playerHealth += 15;                
+            }
+            this.monsterAttacks();
         },
         surrender: function() {
 
