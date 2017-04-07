@@ -21,7 +21,15 @@ new Vue({
             this.checkWin();            
         },
         special: function() {
-
+            this.monsterHealth -= Math.trunc(this.calculateDamage(10,20));
+            if(this.checkWin()) {
+                return;
+            };
+            this.monsterAttacks();
+        },
+        monsterAttacks: function(){
+            this.playerHealth -= Math.trunc(this.calculateDamage(2,14));
+            this.checkWin();
         },
         heal: function() {
 
