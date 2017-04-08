@@ -3,42 +3,63 @@ new Vue({
     data: {
         playerHealth: 100,
         monsterHealth: 100,
-        gameIsRunning: false
+        gameIsRunning: false,
+        turns: []
     },
     methods: {
         beginGame: function() {
             this.gameIsRunning = true;
             this.playerHealth = 100;
             this.monsterHealth = 100;
+            this.turns = [];
         },
         attack: function() {
-            this.monsterHealth -= Math.trunc(this.calculateDamage(3,10));
+            var damage = Math.trunc(this.calculateDamage(3,10))
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'You hit the monster for ' + damage.toString()
+            });
+            this.monsterHealth -= damage;
             if(this.checkWin()) {
                 return;
             };
             
-            this.playerHealth -= Math.trunc(this.calculateDamage(2,14));
-            this.checkWin();            
+            this.monsterAttacks();            
         },
         special: function() {
-            this.monsterHealth -= Math.trunc(this.calculateDamage(10,20));
+            var damage = Math.trunc(this.calculateDamage(10,20));
+            this.monsterHealth -= damage;
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'You hit the monster for ' + damage.toString()
+            })
             if(this.checkWin()) {
                 return;
             };
             this.monsterAttacks();
         },
         monsterAttacks: function(){
-            this.playerHealth -= Math.trunc(this.calculateDamage(2,14));
+            var monsterDamage = Math.trunc(this.calculateDamage(2,14));
+            this.playerHealth -= monsterDamage;
             this.checkWin();
+            this.turns.unshift({
+                isPlayer: false,
+                text: 'Monster hits you for ' + monsterDamage.toString()
+            })
         },
         heal: function() {
+            var healing = Math.trunc(Math.random() * (15 - 5) + 5);
             if (this.playerHealth <= 85) {
-                this.playerHealth += 15;                
+                this.playerHealth += healing;  
             }
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'You heal for ' + healing.toString()
+            })
             this.monsterAttacks();
         },
         surrender: function() {
-
+            this.gameIsRunning = false;
         },
         calculateDamage: function(min, max) {
             return (Math.random() * (max - min)) + min;
